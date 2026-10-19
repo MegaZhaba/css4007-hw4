@@ -15,7 +15,11 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from strategies import STRATEGIES, Client
+
+load_dotenv()
 
 ROOT = Path(__file__).parent
 QUESTIONS = json.loads((ROOT / "data" / "questions.json").read_text(encoding="utf-8"))
@@ -24,6 +28,8 @@ OUT = ROOT / "outputs"
 # USD per 1M tokens. Set them in .env (see README of the model's pricing page).
 PRICE_INPUT = float(os.getenv("PRICE_INPUT_PER_1M", "0") or 0)
 PRICE_OUTPUT = float(os.getenv("PRICE_OUTPUT_PER_1M", "0") or 0)
+# Cached input tokens are billed at a lower rate; default = full input price.
+PRICE_CACHED = float(os.getenv("PRICE_CACHED_INPUT_PER_1M", "") or PRICE_INPUT)
 
 
 def is_correct(parsed, q: dict) -> bool:
@@ -41,7 +47,9 @@ def is_correct(parsed, q: dict) -> bool:
 
 
 def cost(usage: dict) -> float:
-    return (usage.get("input_tokens", 0) * PRICE_INPUT
+    cached = usage.get("cached_tokens", 0)
+    return ((usage.get("input_tokens", 0) - cached) * PRICE_INPUT
+            + cached * PRICE_CACHED
             + usage.get("output_tokens", 0) * PRICE_OUTPUT) / 1_000_000
 
 
@@ -66,7 +74,7 @@ def run_one(client: Client, strategy: str, q: dict, vague: bool) -> dict:
 
 def summarise(results: list[dict]) -> dict:
     secs = [r["seconds"] for r in results]
-    usage = {"input_tokens": 0, "output_tokens": 0}
+    usage = {"input_tokens": 0, "output_tokens": 0, "cached_tokens": 0}
     for r in results:
         for k in usage:
             usage[k] += r["usage"].get(k, 0)
@@ -76,6 +84,7 @@ def summarise(results: list[dict]) -> dict:
         "unanswered": sum(r["unanswered"] for r in results),
         "input_tokens": usage["input_tokens"],
         "output_tokens": usage["output_tokens"],
+        "cached_tokens": usage["cached_tokens"],
         "median_seconds": round(statistics.median(secs), 2) if secs else 0,
         "total_seconds": round(sum(secs), 2),
         "cost_usd": round(cost(usage), 4),
@@ -115,7 +124,8 @@ def main() -> None:
         summary.update({
             "strategy": strategy, "run": args.run, "vague": args.vague,
             "settings": client.settings(),
-            "price_per_1m": {"input": PRICE_INPUT, "output": PRICE_OUTPUT},
+            "price_per_1m": {"input": PRICE_INPUT, "cached_input": PRICE_CACHED,
+                             "output": PRICE_OUTPUT},
             "finished_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         })
         (sdir / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")

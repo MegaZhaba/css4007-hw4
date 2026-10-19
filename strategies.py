@@ -19,7 +19,9 @@ TEMPERATURE = 1.0          # same for every strategy; S2 needs it > 0 so samples
 K_SAMPLES = 5              # S2
 MAX_ROUNDS = 10            # S3: model calls per question before we give up
 MAX_COMPLETION_TOKENS = 4000
-REASONING_EFFORT = os.getenv("REASONING_EFFORT") or None   # only sent if set
+# gpt-5.6-luna refuses function tools in Chat Completions unless reasoning_effort="none",
+# so S3 needs "none"; S1 and S2 use the same value to keep the comparison fair.
+REASONING_EFFORT = os.getenv("REASONING_EFFORT") or "none"
 
 ANSWER_FORMAT = (
     "End your reply with exactly one final line in this format:\n"

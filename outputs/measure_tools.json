@@ -1,0 +1,13 @@
+{
+  "tiktoken_estimate_of_json": {
+    "normal": 520,
+    "vague": 383
+  },
+  "measured_prompt_tokens": {
+    "without_tools": 9,
+    "with_tools_normal": 528,
+    "added_normal": 519,
+    "with_tools_vague": 392,
+    "added_vague": 383
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "questions": 20,
+  "correct": 19,
+  "unanswered": 0,
+  "input_tokens": 83550,
+  "output_tokens": 4630,
+  "cached_tokens": 41754,
+  "median_seconds": 6.05,
+  "total_seconds": 119.19,
+  "cost_usd": 0.0148,
+  "per_question": {
+    "Q-01": true,
+    "Q-02": true,
+    "Q-03": true,
+    "Q-04": true,
+    "Q-05": true,
+    "Q-06": true,
+    "Q-07": true,
+    "Q-08": true,
+    "Q-09": true,
+    "Q-10": true,
+    "Q-11": true,
+    "Q-12": true,
+    "Q-13": true,
+    "Q-14": false,
+    "Q-15": true,
+    "Q-16": true,
+    "Q-17": true,
+    "Q-18": true,
+    "Q-19": true,
+    "Q-20": true
+  },
+  "strategy": "s3",
+  "run": "1",
+  "vague": false,
+  "settings": {
+    "model": "gpt-5.6-luna",
+    "temperature": 1.0,
+    "max_completion_tokens": 4000,
+    "reasoning_effort": "none",
+    "k": 5,
+    "max_rounds": 10,
+    "dropped_parameters": []
+  },
+  "price_per_1m": {
+    "input": 0.2,
+    "cached_input": 0.02,
+    "output": 1.2
+  },
+  "finished_utc": "2026-10-19T20:53:06+00:00"
+}
