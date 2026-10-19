@@ -1,6 +1,6 @@
 # HW4 — submission
 
-**AI assistance:** <!-- STUDENT: fill in honestly, e.g. "Claude Code (Anthropic) was used to help draft the plan, code, tests and text; I reviewed, ran and edited everything." -->
+**AI assistance:** Claude Code (Anthropic) was used to help draft the plan, code, tests and text; I reviewed, ran and edited everything.
 
 ---
 
